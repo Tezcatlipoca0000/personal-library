@@ -18,6 +18,19 @@ app.use(cors({origin: '*'})); //USED FOR FCC TESTING PURPOSES ONLY!
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const mongoose = require('mongoose'),
+      mongoURI = process.env.DB,
+      mongoOpt = {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+      };
+
+mongoose.connect(mongoURI, mongoOpt).then(
+  () => console.log('connection successful to DB'),
+  err => console.log('connecting to DB error ----', err)
+  );
+mongoose.connection.on('error', err => console.log('connection to DB lost ---', err));
+
 //Index page (static HTML)
 app.route('/')
   .get(function (req, res) {
