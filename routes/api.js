@@ -8,6 +8,14 @@
 
 'use strict';
 
+const mongoose = require('mongoose'),
+      Schema = mongoose.Schema,
+      book = new Schema({
+        title: {type: String, required: true},
+        comments: [String],
+        commentcount: Number
+      });
+
 module.exports = function (app) {
 
   app.route('/api/books')
@@ -17,7 +25,16 @@ module.exports = function (app) {
     })
     
     .post(function (req, res){
-      let title = req.body.title;
+      let title = req.body.title,
+          Book = mongoose.model('Book', book),
+          newBook = new Book({
+            title: title,
+            comments: [],
+            commentcount: 0
+          });
+      newBook.save((err, data) => {
+        err ? res.send('missing required field title') : res.json({_id: data._id, title: data.title});
+      });
       //response will contain new book object including atleast _id and title
     })
     
