@@ -71,6 +71,7 @@ module.exports = function (app) {
             res.send('no book exists')
           } else {
             doc.comments.push(comment);
+            doc.commentcount++;
             doc.save((err, data) => {
               console.log('the data saved after commenting ', data);
               err ? res.send('error saving') : res.json({_id: bookid, title: data.title, comments: data.comments});
