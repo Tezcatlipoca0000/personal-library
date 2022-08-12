@@ -10,6 +10,7 @@ const chaiHttp = require('chai-http');
 const chai = require('chai');
 const assert = chai.assert;
 const server = require('../server');
+const { request } = require('chai');
 
 chai.use(chaiHttp);
 
@@ -156,7 +157,22 @@ suite('Functional Tests', function() {
       });
 
       test('Test POST /api/books/[id] without comment field', function(done){
-        //done();
+        chai
+          .request(server)
+          .post('/api/books')
+          .type('form')
+          .send({title: 'Test with chai 4'})
+          .end(function(erro, resp) {
+            chai
+              .request(server)
+              .post(`/api/books/${resp.body._id}`)
+              .end(function(err, res) {
+                assert.isNull(err, 'Error is null');
+                assert.equal(res.status, 200, 'response status is 200');
+                assert.equal(res.text, 'missing required field comment', 'response text is "missing required field comment"');
+                done();
+              });
+          });
       });
 
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
