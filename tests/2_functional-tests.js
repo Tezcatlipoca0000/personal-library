@@ -194,7 +194,22 @@ suite('Functional Tests', function() {
     suite('DELETE /api/books/[id] => delete book object id', function() {
 
       test('Test DELETE /api/books/[id] with valid id in db', function(done){
-        //done();
+        chai
+          .request(server)
+          .post('/api/books')
+          .type('form')
+          .send({title: 'Test with chai 5'})
+          .end(function(erro, resp) {
+            chai
+              .request(server)
+              .delete(`/api/books/${resp.body._id}`)
+              .end(function(err, res) {
+                assert.isNull(err, 'Error is null');
+                assert.equal(res.status, 200, 'response status is 200');
+                assert.equal(res.text, 'delete successful', 'response text is "delete successful"');
+                done();
+              });
+          });
       });
 
       test('Test DELETE /api/books/[id] with  id not in db', function(done){
