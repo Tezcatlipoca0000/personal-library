@@ -50,28 +50,40 @@ module.exports = function (app) {
   app.route('/api/books/:id')
     .get(function (req, res){
       let bookid = req.params.id;
-      if (!bookid) {
-        res.send('_id missing');
-      } else {
-        Book.findOne({_id: bookid}, (err, doc) => {
-          console.log('get w/_id result', bookid, err, doc);
-          (err || doc === null) ? res.send('no book exists') : res.json({_id: bookid, title: doc.title, comments: doc.comments});
-        });
-      }
+      Book.findOne({_id: bookid}, (err, doc) => {
+        console.log('get w/_id result', bookid, err, doc);
+        (err || !doc) ? res.send('no book exists') : res.json({_id: bookid, title: doc.title, comments: doc.comments});
+      });
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
     })
     
     .post(function(req, res){
       let bookid = req.params.id;
       let comment = req.body.comment;
-      Book.find({_id: bookid}, (err, doc) => {
-
-      });
+      if (!comment) {
+        res.send('missing required field comment');
+      } else {
+        Book.findOne({_id: bookid}, (err, doc) => {
+          if (err || !doc) {
+            res.send('no book exists')
+          } else {
+            doc.comments.push(comment);
+            doc.save((err, data) => {
+              console.log('the data saved after commenting ', data);
+              err ? res.send('error saving') : res.json({_id: bookid, title: data.title, comments: data.comments});
+            });
+          }
+        });
+      }
+      
       //json res format same as .get
     })
     
     .delete(function(req, res){
       let bookid = req.params.id;
+      Book.findOne({_id: bookid}, (err, doc) => {
+        (err || !doc) ? res.send('no book exists') : res.send('delete successful');
+      });
       //if successful response will be 'delete successful'
     });
   
