@@ -46,17 +46,28 @@ suite('Functional Tests', function() {
           .post('/api/books')
           .type('form')
           .send({
-            title: 'Test 1'
+            title: 'Test with chai 1'
           })
           .end(function(err, res) {
             assert.isNull(err, 'Error is null');
             assert.equal(res.status, 200, 'response status is 200');
+            assert.property(res.body, '_id', 'res has _id');
+            assert.property(res.body, 'title', 'res has title');
+            done();
           });
-        //done();
       });
       
       test('Test POST /api/books with no title given', function(done) {
-        //done();
+        chai
+          .request(server)
+          .post('/api/books')
+          .end(function(err, res) {
+            //console.log('oiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', res);
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+            assert.equal(res.text, 'missing required field title', 'res is "missing required field title"');
+            done();
+          });
       });
       
     });
