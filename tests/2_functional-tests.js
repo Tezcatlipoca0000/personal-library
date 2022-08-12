@@ -132,7 +132,27 @@ suite('Functional Tests', function() {
     suite('POST /api/books/[id] => add comment/expect book object with id', function(){
       
       test('Test POST /api/books/[id] with comment', function(done){
-        //done();
+        chai
+          .request(server)
+          .post('/api/books')
+          .type('form')
+          .send({title: 'Test with chai 3'})
+          .end(function(erro, resp) {
+            chai
+              .request(server)
+              .post(`/api/books/${resp.body._id}`)
+              .type('form')
+              .send({comment: 'Adding comment with chai'})
+              .end(function(err, res) {
+                assert.isNull(err, 'Error is null');
+                assert.equal(res.status, 200, 'response status is 200');
+                assert.property(res.body, 'comments', 'Book found contain comments');
+                assert.property(res.body, 'title', 'Book found contain title');
+                assert.property(res.body, '_id', 'Book found contain _id');
+                assert.lengthOf(res.body.comments, 1, 'comments has length of 1');
+                done();
+              });
+          });
       });
 
       test('Test POST /api/books/[id] without comment field', function(done){
