@@ -176,7 +176,17 @@ suite('Functional Tests', function() {
       });
 
       test('Test POST /api/books/[id] with comment, id not in db', function(done){
-        //done();
+        chai
+          .request(server)
+          .post('/api/books/05f6b947b6458e9a538e0f05')
+          .type('form')
+          .send({comment: 'Adding comment with chai'})
+          .end(function(err, res) {
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+            assert.equal(res.text, 'no book exists', 'response text is "no book exists"');
+            done();
+          });
       });
       
     });
