@@ -41,6 +41,17 @@ suite('Functional Tests', function() {
     suite('POST /api/books with title => create book object/expect book object', function() {
       
       test('Test POST /api/books with title', function(done) {
+        chai
+          .request(server)
+          .post('/api/books')
+          .type('form')
+          .send({
+            title: 'Test 1'
+          })
+          .end(function(err, res) {
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+          });
         //done();
       });
       
