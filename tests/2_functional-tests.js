@@ -213,7 +213,15 @@ suite('Functional Tests', function() {
       });
 
       test('Test DELETE /api/books/[id] with  id not in db', function(done){
-        //done();
+        chai
+          .request(server)
+          .delete('/api/books/05f6b947b6458e9a538e0f05')
+          .end(function(err, res) {
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+            assert.equal(res.text, 'no book exists', 'response text is "no book exists"');
+            done();
+          });
       });
 
     });

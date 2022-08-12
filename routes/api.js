@@ -54,7 +54,6 @@ module.exports = function (app) {
     .get(function (req, res){
       let bookid = req.params.id;
       Book.findOne({_id: bookid}, (err, doc) => {
-        console.log('get w/_id result', bookid, err, doc);
         (err || !doc) ? res.send('no book exists') : res.json({_id: bookid, title: doc.title, comments: doc.comments});
       });
       //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
@@ -73,7 +72,6 @@ module.exports = function (app) {
             doc.comments.push(comment);
             doc.commentcount++;
             doc.save((err, data) => {
-              console.log('the data saved after commenting ', data);
               err ? res.send('error saving') : res.json({_id: bookid, title: data.title, comments: data.comments});
             });
           }
