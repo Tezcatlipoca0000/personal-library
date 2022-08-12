@@ -62,21 +62,30 @@ suite('Functional Tests', function() {
           .request(server)
           .post('/api/books')
           .end(function(err, res) {
-            //console.log('oiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', res);
             assert.isNull(err, 'Error is null');
             assert.equal(res.status, 200, 'response status is 200');
             assert.equal(res.text, 'missing required field title', 'res is "missing required field title"');
             done();
           });
       });
-      
     });
 
 
     suite('GET /api/books => array of books', function(){
       
       test('Test GET /api/books',  function(done){
-        //done();
+        chai
+          .request(server)
+          .get('/api/books')
+          .end(function(err, res) {
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+            assert.isArray(res.body, 'response should be an array');
+            assert.property(res.body[0], 'commentcount', 'Books in array should contain commentcount');
+            assert.property(res.body[0], 'title', 'Books in array should contain title');
+            assert.property(res.body[0], '_id', 'Books in array should contain _id');
+            done();
+          });
       });      
       
     });
