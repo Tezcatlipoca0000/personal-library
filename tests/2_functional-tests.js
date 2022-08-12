@@ -94,7 +94,24 @@ suite('Functional Tests', function() {
     suite('GET /api/books/[id] => book object with [id]', function(){
       
       test('Test GET /api/books/[id] with id not in db',  function(done){
-        //done();
+        chai
+          .request(server)
+          .post('/api/books')
+          .type('form')
+          .send({title: 'Test with chai 2'})
+          .end(function(erro, resp) {
+            chai
+              .request(server)
+              .get(`/api/books/${resp.body._id}`)
+              .end(function(err, res) {
+                assert.isNull(err, 'Error is null');
+                assert.equal(res.status, 200, 'response status is 200');
+                assert.property(res.body, 'comments', 'Book found contain comments');
+                assert.property(res.body, 'title', 'Book found contain title');
+                assert.property(res.body, '_id', 'Book found contain _id');
+                done();
+              });
+          });
       });
       
       test('Test GET /api/books/[id] with valid id in db',  function(done){
