@@ -96,6 +96,18 @@ suite('Functional Tests', function() {
       test('Test GET /api/books/[id] with id not in db',  function(done){
         chai
           .request(server)
+          .get('/api/books/05f6b947b6458e9a538e0f05')
+          .end(function(err, res) {
+            assert.isNull(err, 'Error is null');
+            assert.equal(res.status, 200, 'response status is 200');
+            assert.equal(res.text, 'no book exists', 'res is "no book exists"');
+            done();
+          });
+      });
+      
+      test('Test GET /api/books/[id] with valid id in db',  function(done){
+        chai
+          .request(server)
           .post('/api/books')
           .type('form')
           .send({title: 'Test with chai 2'})
@@ -112,10 +124,6 @@ suite('Functional Tests', function() {
                 done();
               });
           });
-      });
-      
-      test('Test GET /api/books/[id] with valid id in db',  function(done){
-        //done();
       });
       
     });
